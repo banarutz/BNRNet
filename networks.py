@@ -1,5 +1,5 @@
 from imports import *
-
+import torch as nn
 ####################
 
 
