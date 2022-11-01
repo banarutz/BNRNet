@@ -5,8 +5,8 @@ from imports import *
  # PATHS #
 ###########
 
-PATH = 'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_non_cropped\\img_celeba\\'
-SAVE_MODEL_PATH = cwd = os.getcwd() + 'models'
+PATH = 'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_cropped_png\\img_align_celeba_png\\'
+SAVE_MODEL_PATH = 'C:\\Users\\vlogw\\Desktop\\licenta\\BNRNet_models\\first_experiment_working_vgg\\'
 MODEL_PATH = None
 
 
@@ -15,5 +15,5 @@ MODEL_PATH = None
 ###########
 
 
-batch_size = 4
+batch_size = 8
 number_of_epochs = 20

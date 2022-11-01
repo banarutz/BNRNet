@@ -1,4 +1,4 @@
-from VGG16 import VGGNet
+from VGG16 import VGGNet, ECCVGenerator
 from imports import *
 from utils import *
 from config import *
@@ -10,19 +10,20 @@ def load_dataset(PATH):
 	return train_loader
 
 
-def train (train_loader, optimizer, model):
+def train (train_loader, optimizer, model, epoch):
     model = torch.nn.DataParallel(model).cuda()
     model.train()
     train_loss = []
-
+    
     for iteration, batch in (enumerate(tqdm.auto.tqdm(train_loader))):
         optimizer.zero_grad()
         input, label = batch
         predict = model (input)
         predict = predict.cuda()
-
+        label = label.cuda()
         mse = mse_loss (predict, label)
         train_loss.append(mse)
+
 
         mse.backward()
         optimizer.step()    
@@ -37,6 +38,7 @@ def train (train_loader, optimizer, model):
         
 def main():
     model = VGGNet()
+    # model = ECCVGenerator()
     print('########################')
     print('Training has started...')
     if MODEL_PATH == None:
@@ -54,19 +56,22 @@ def main():
     train_loader = load_dataset(PATH)
     optimizer = torch.optim.Adam(list(model.parameters()), lr = 10**-(5))
     epoch_loss = []
-
+    writer = SummaryWriter()
     for epoch in tqdm.tqdm (range(start_epoch, start_epoch + number_of_epochs)): 
-        mse = train (train_loader, optimizer, model)
+        mse = train (train_loader, optimizer, model, epoch)
+        writer.add_scalar('Train loss -> MSE', mse, epoch)
+
         print('Epoch:', epoch, 'has mse:', mse)
         print('########################')
         epoch_loss.append(mse)
 
+        model_path = os.path.join(SAVE_MODEL_PATH, f'{str(epoch)}.pth')
         torch.save({
                         'epoch': epoch,
                         'state_dict': model.state_dict(),
                         'optimizer_state_dict': optimizer.state_dict(),
                         'loss': mse}, 
-                        SAVE_MODEL_PATH)
+                        model_path)
     
 
 if __name__ == '__main__':
