@@ -103,7 +103,7 @@ class VGGNet (nn.Module):
         self.block7 = VGGBlock2 (512, 512, 3, False)
         self.block8 = VGGBlock3 (512, 256, 3, True)
         self.block9 = nn.Conv2d(256, 313, kernel_size=1, stride=1, padding='same', bias=True)
-        self.upsample = nn.Upsample(scale_factor=4, mode='bilinear')
+        self.upsample = nn.Upsample((218, 178), mode='bilinear')
         self.model_out = nn.Conv2d(313, 2, kernel_size=1, padding=0, dilation=1, stride=1, bias=False)
         self.softmax = nn.Softmax (dim = 1)
 
@@ -118,7 +118,7 @@ class VGGNet (nn.Module):
         l = self.block7(l)
         l = self.block8(l)
         l = self.block9(l)
-        out = self.softmax (self.model_out(l))
+        out = self.model_out (self.softmax(l))
         out = self.upsample (out)
         return out
 
