@@ -16,23 +16,37 @@ def train (train_loader, optimizer, model, epoch):
     train_loss = []
     
     for iteration, batch in (enumerate(tqdm.auto.tqdm(train_loader))):
+        torch.cuda.empty_cache()
         optimizer.zero_grad()
         input, label = batch
-        predict = model (input)
-        predict = predict.cuda()
-        label = label.cuda()
-        mse = mse_loss (predict, label)
-        train_loss.append(mse)
+        input, label = input.to("cuda"), label.to("cuda")
+        predict = model(input)
+        # predict = predict.cuda()
+        # label = label.cuda()
+        mse = mse_loss(predict, label)
+
+
+
+        # train_loss.append(mse)
 
 
         mse.backward()
-        optimizer.step()    
-    model.eval()
+        optimizer.step()   
+        mse = to_numpy(mse)
+        train_loss.append(mse)
+        #####DETACH AICI################
+        #  
 
-    return mse
+    # model.eval()
+    # with torch.no_grad():
+    #     print('am ajuns aici')
+
+ ################ VALIDARE ###################
+
+    return np.mean(train_loss)
 
 
-    ################ VALIDARE ###################
+   
     #model.train()
 
         
@@ -63,7 +77,10 @@ def main():
 
         print('Epoch:', epoch, 'has mse:', mse)
         print('########################')
-        epoch_loss.append(mse)
+        # epoch_loss.append(mse)
+
+        if not os.path.exists(SAVE_MODEL_PATH):
+            os.makedirs(SAVE_MODEL_PATH)
 
         model_path = os.path.join(SAVE_MODEL_PATH, f'{str(epoch)}.pth')
         torch.save({

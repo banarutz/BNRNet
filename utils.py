@@ -45,3 +45,11 @@ def add_noise (original_image, factor):
         '''Color image.'''
         # To be added after i receive more information about how to do this.
     return noisy_image
+
+def to_numpy(tensor):
+    return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
+
+def show_img (img):
+    cv2.imshow ('tzaka paka', img)
+    cv2.waitKey()
+    cv2.destroyAllWindows()

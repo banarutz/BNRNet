@@ -1,7 +1,8 @@
 from imports import *
 import os
-from torchvision import transforms
 from PIL import Image
+from torchvision import transforms
+
 
 
 def generate_paths(dir_list):
@@ -16,19 +17,22 @@ def generate_paths(dir_list):
 class VGGLoader (torch.utils.data.Dataset):
     def __init__ (self, PATH):
         self.PATH = PATH
-        self.paths = os.listdir(PATH)
+        self.paths = sorted(os.listdir(PATH))
 
     def __getitem__ (self, index):
         path = self.paths[index]
 
         image = cv2.imread(self.PATH + path)
+        # print (self.PATH + path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         input = image [:, :, 0]
         image = image[:, :, 1:3]
-        image = Image.fromarray(np.uint8(image))
-        input = Image.fromarray(np.uint8(input))
 
-        transform = transforms.Resize((224, 224), interpolation= transforms.InterpolationMode.BILINEAR)
+        image = Image.fromarray(image)
+        input = Image.fromarray(input)
+
+
+        transform = transforms.Resize((218, 178), interpolation= transforms.InterpolationMode.BILINEAR)
 
         image = transform (image)
         input = transform (input)
@@ -43,14 +47,18 @@ class VGGLoader (torch.utils.data.Dataset):
         image = to_tensor(image)
         input = to_tensor(input)
 
+        
+        image = image / 255.0
+        input = input / 255.0
+
         # print (image.type, input.type)
 
         return input, image
         
 
     def __len__ (self):
-        return len(self.paths)
-        # return 200
+        # return len(self.paths)
+        return 50000
 
 
 class ValidationDataSet (torch.utils.data.Dataset):
