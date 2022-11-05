@@ -6,7 +6,8 @@ from imports import *
 ###########
 
 PATH = 'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_cropped_png\\img_align_celeba_png\\'
-SAVE_MODEL_PATH = 'C:\\Users\\vlogw\\Desktop\\licenta\\BNRNet_models\\4_11_experiment\\'
+SAVE_MODEL_PATH = 'D:\\se_joaca_licenta\\Models'
+# MODEL_PATH = 'D:\\se_joaca_licenta\\Models\\1.pth'
 MODEL_PATH = None
 
 

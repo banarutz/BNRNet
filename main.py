@@ -23,17 +23,22 @@ def train (train_loader, optimizer, model, epoch):
         predict = model(input)
         # predict = predict.cuda()
         # label = label.cuda()
-        mse = mse_loss(predict, label)
 
+        predict = to_numpy(predict)
+        label = to_numpy(label)
 
+        # print(label.shape)
 
-        # train_loss.append(mse)
-
-
+        mse = get_mse(predict[:,0,:,:] , label[:,0,:,:])
+        mse += get_mse(predict[:,1,:,:] , label[:,1,:,:]) 
+        mse = np.array(mse)
+        mse = torch.Tensor(mse)
+        mse = Variable(mse, requires_grad = True)
         mse.backward()
-        optimizer.step()   
+        optimizer.step()
         mse = to_numpy(mse)
         train_loss.append(mse)
+
         #####DETACH AICI################
         #  
 
@@ -43,7 +48,8 @@ def train (train_loader, optimizer, model, epoch):
 
  ################ VALIDARE ###################
 
-    return np.mean(train_loss)
+    # return np.mean(train_loss)
+    return np.sum(train_loss)
 
 
    

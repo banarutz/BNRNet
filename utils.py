@@ -53,3 +53,8 @@ def show_img (img):
     cv2.imshow ('tzaka paka', img)
     cv2.waitKey()
     cv2.destroyAllWindows()
+
+def get_mse (predict, gt):
+	pixel = predict.shape[0]*predict.shape[1]
+	mse_diff = np.sum((predict - gt) ** 2)/pixel
+	return mse_diff	

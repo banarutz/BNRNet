@@ -58,7 +58,7 @@ class VGGLoader (torch.utils.data.Dataset):
 
     def __len__ (self):
         # return len(self.paths)
-        return 50000
+        return 1000
 
 
 class ValidationDataSet (torch.utils.data.Dataset):
