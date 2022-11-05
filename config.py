@@ -11,7 +11,7 @@ SAVE_MODEL_PATH = 'D:\\se_joaca_licenta\\Models'
 MODEL_PATH = None
 
 
-LOAD_MODEL_PATH = 'C:\\Users\\vlogw\\Desktop\\licenta\\BNRNet_models\\first_experiment_working_vgg\\'
+LOAD_MODEL_PATH = 'D:\\se_joaca_licenta\\Models\\'
 INFER_PATH =  'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_cropped_png\\img_align_celeba_png\\'
 
 ###########

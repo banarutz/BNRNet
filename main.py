@@ -24,16 +24,18 @@ def train (train_loader, optimizer, model, epoch):
         # predict = predict.cuda()
         # label = label.cuda()
 
-        predict = to_numpy(predict)
-        label = to_numpy(label)
+        # predict = to_numpy(predict)
+        # label = to_numpy(label)
 
         # print(label.shape)
 
-        mse = get_mse(predict[:,0,:,:] , label[:,0,:,:])
-        mse += get_mse(predict[:,1,:,:] , label[:,1,:,:]) 
-        mse = np.array(mse)
-        mse = torch.Tensor(mse)
-        mse = Variable(mse, requires_grad = True)
+        MSE = torch.nn.L1Loss ()
+        mse = MSE (predict, label)
+        # mse = get_mse(predict[:,0,:,:] , label[:,0,:,:])
+        # mse += get_mse(predict[:,1,:,:] , label[:,1,:,:]) 
+        # mse = np.array(mse)
+        # mse = torch.tensor(mse, requires_grad = True)
+        # mse = Variable(mse, requires_grad = True)
         mse.backward()
         optimizer.step()
         mse = to_numpy(mse)
@@ -49,7 +51,7 @@ def train (train_loader, optimizer, model, epoch):
  ################ VALIDARE ###################
 
     # return np.mean(train_loss)
-    return np.sum(train_loss)
+    return np.mean(train_loss)
 
 
    

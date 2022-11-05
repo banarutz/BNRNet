@@ -55,6 +55,10 @@ def show_img (img):
     cv2.destroyAllWindows()
 
 def get_mse (predict, gt):
-	pixel = predict.shape[0]*predict.shape[1]
-	mse_diff = np.sum((predict - gt) ** 2)/pixel
-	return mse_diff	
+    pixel = predict.shape[2]*predict.shape[1]
+    mse_diff = np.sum((predict - gt) ** 2)/pixel
+    return mse_diff	
+
+def my_loss(output, target):
+    loss = torch.mean((output - target)**2)
+    return loss

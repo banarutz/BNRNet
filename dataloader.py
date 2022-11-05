@@ -27,7 +27,6 @@ class VGGLoader (torch.utils.data.Dataset):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
         input = image [:, :, 0]
         image = image[:, :, 1:3]
-
         image = Image.fromarray(image)
         input = Image.fromarray(input)
 
