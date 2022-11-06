@@ -46,9 +46,10 @@ class VGGLoader (torch.utils.data.Dataset):
         image = to_tensor(image)
         input = to_tensor(input)
 
-        
-        image = image / 255.0
-        input = input / 255.0
+        # print (image)
+        # image = image / 255.0
+        # print(image)
+        # input = input / 255.0
 
         # print (image.type, input.type)
 
@@ -56,8 +57,8 @@ class VGGLoader (torch.utils.data.Dataset):
         
 
     def __len__ (self):
-        return len(self.paths)
-        # return 100
+        # return len(self.paths)
+        return 100
 
 
 class ValidationDataSet (torch.utils.data.Dataset):

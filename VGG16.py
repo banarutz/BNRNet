@@ -12,8 +12,10 @@ class VGGBlock1 (nn.Module):
 
             self.block = nn.Sequential(
                 nn.Conv2d(in_channels = in_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 2, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.BatchNorm2d(out_ch),
                 # nn.MaxPool2d(kernel_size= 2),
@@ -23,8 +25,10 @@ class VGGBlock1 (nn.Module):
 
              self.block = nn.Sequential(
                 nn.Conv2d(in_channels = in_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 'same'),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 'same'),
+                nn.Dropout(0.2),
                 nn.ReLU(True), 
                 nn.BatchNorm2d(out_ch),
             )
@@ -43,10 +47,13 @@ class VGGBlock2 (nn.Module):
 
             self.block = nn.Sequential(
                 nn.Conv2d(in_channels = in_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.BatchNorm2d(out_ch),
                 # nn.MaxPool2d(kernel_size= 2),
@@ -56,10 +63,13 @@ class VGGBlock2 (nn.Module):
 
              self.block = nn.Sequential(
                 nn.Conv2d(in_channels = in_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True),
                 nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 2, padding = 1, bias = True),
+                nn.Dropout(0.2),
                 nn.ReLU(True), 
                 nn.BatchNorm2d(out_ch),
             )
@@ -77,10 +87,13 @@ class VGGBlock3 (nn.Module):
 
         self.block = nn.Sequential(
             nn.ConvTranspose2d(in_channels = in_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+            nn.Dropout(0.2),
             nn.ReLU(True),
             nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+            nn.Dropout(0.2),
             nn.ReLU(True),
             nn.Conv2d(in_channels = out_ch, out_channels= out_ch, kernel_size = k_size, stride = 1, padding = 1, bias = True),
+            nn.Dropout(0.2),
             nn.ReLU(True),
             nn.BatchNorm2d(out_ch),
             # nn.MaxPool2d(kernel_size= 2),
@@ -103,6 +116,7 @@ class VGGNet (nn.Module):
         self.block7 = VGGBlock2 (512, 512, 3, False)
         self.block8 = VGGBlock3 (512, 256, 3, True)
         self.block9 = nn.Conv2d(256, 313, kernel_size=1, stride=1, padding='same', bias=True)
+        self.block10 = nn.Dropout(0.2)
         self.upsample = nn.Upsample((218, 178), mode='bilinear')
         self.model_out = nn.Conv2d(313, 2, kernel_size=1, padding=0, dilation=1, stride=1, bias=False)
         self.softmax = nn.Softmax (dim = 1)
@@ -118,6 +132,7 @@ class VGGNet (nn.Module):
         l = self.block7(l)
         l = self.block8(l)
         l = self.block9(l)
+        l = self.block10(l)
         out = self.model_out (self.softmax(l))
         out = self.upsample (out)
         return out
@@ -199,8 +214,8 @@ class ECCVGenerator(nn.Module):
 
         self.softmax = nn.Softmax(dim=1)
         self.model_out = nn.Conv2d(313, 2, kernel_size=1, padding=0, dilation=1, stride=1, bias=False)
-        self.upsample4 = nn.Upsample(scale_factor=4, mode='bilinear')
-
+        # self.upsample4 = nn.Upsample(scale_factor=4, mode='bilinear')
+        self.upsample4 = nn.Upsample((218, 178), mode='bilinear')
     def forward(self, input_l):
         conv1_2 = self.model1(input_l)
         conv2_2 = self.model2(conv1_2)
@@ -210,7 +225,6 @@ class ECCVGenerator(nn.Module):
         conv6_3 = self.model6(conv5_3)
         conv7_3 = self.model7(conv6_3)
         conv8_3 = self.model8(conv7_3)
-        print(conv8_3.shape)
         out_reg = self.model_out(self.softmax(conv8_3))
 
         return self.upsample4(out_reg)
