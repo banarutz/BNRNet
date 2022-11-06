@@ -46,6 +46,8 @@ def add_noise (original_image, factor):
         # To be added after i receive more information about how to do this.
     return noisy_image
 
+################################################################################################
+
 def to_numpy(tensor):
     return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
 

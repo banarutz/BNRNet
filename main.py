@@ -10,16 +10,16 @@ def load_dataset(PATH):
 	return train_loader
 
 def validation_dataset(VALIDATION_PATH):
-    train_set = VGGLoader(VALIDATION_PATH)
-    train_loader = DataLoader(dataset=train_set, batch_size=1, shuffle=True)
-    return train_loader
+    valid_set = VGGLoader(VALIDATION_PATH)
+    valid_loader = DataLoader(dataset=valid_set, batch_size=1, shuffle=True)
+    return valid_loader
 
 
 def train (train_loader, valid_loader, optimizer, model, epoch):
     model = torch.nn.DataParallel(model).cuda()
     model.train()
     train_loss = []
-    print('### Validation ###')
+
     for iteration, batch in (enumerate(tqdm.auto.tqdm(train_loader))):
         torch.cuda.empty_cache()
         optimizer.zero_grad()
@@ -35,17 +35,13 @@ def train (train_loader, valid_loader, optimizer, model, epoch):
         mse = to_numpy(mse)
         train_loss.append(mse)
 
-        #####DETACH AICI################
-        #  
-
-
-
  ################ VALIDARE ###################
     model.eval()
     mae_valid_loss =[]
     mse_valid_loss =[]
+    print('### Validation ###')
     with torch.no_grad():
-        for iteration, batch in (enumerate(tqdm.auto.tqdm(train_loader))):
+        for iteration, batch in (enumerate(tqdm.auto.tqdm(valid_loader))):
             input, label = batch
             input, label = input.to("cuda"), label.to("cuda")
             predict = model(input)
@@ -60,13 +56,7 @@ def train (train_loader, valid_loader, optimizer, model, epoch):
             mse = to_numpy(mse)
             mse_valid_loss.append(mse)
 
-    #     print('am ajuns aici')
     return np.mean(train_loss), np.mean(mse_valid_loss), np.mean(mae_valid_loss)
-
-
-   
-    #model.train()
-
         
 def main():
     model = VGGNet()
@@ -93,13 +83,18 @@ def main():
     for epoch in tqdm.tqdm (range(start_epoch, start_epoch + number_of_epochs)): 
         train_loss, mse_valid, mae_valid = train (train_loader, valid_loader, optimizer, model, epoch)
 
-        writer.add_scalar('Train loss -> MSE', train_loss, epoch)
+        writer.add_scalar('Train loss -> MAE', train_loss, epoch)
         writer.add_scalar('MAE validation', mae_valid, epoch)
         writer.add_scalar('MSE validation', mse_valid, epoch)
 
-        print('Epoch:', epoch, 'has mae:', train_loss, 'valid_mae:', mae_valid, 'valid_mse:', mse_valid)
+        writer.add_scalars(f'overfit_checker', {
+        'mae train': train_loss,
+        'mae valid': mae_valid,
+        }, epoch)
+
         print('########################')
-        # epoch_loss.append(mse)
+        print('Epoch:', epoch, 'has train_mae:', train_loss, 'valid_mae:', mae_valid, 'valid_mse:', mse_valid)
+        print('########################')
 
         if not os.path.exists(SAVE_MODEL_PATH):
             os.makedirs(SAVE_MODEL_PATH)

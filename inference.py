@@ -6,8 +6,8 @@ from config import LOAD_MODEL_PATH, INFER_PATH
 np.set_printoptions(threshold=sys.maxsize)
 
 model = VGGNet()
-# ckpt = torch.load(LOAD_MODEL_PATH + '11.pth' )
-# model.load_state_dict(ckpt['state_dict'], strict=True)
+ckpt = torch.load(LOAD_MODEL_PATH + '11.pth' )
+model.load_state_dict(ckpt['state_dict'], strict=True)
 
 infer_image = cv2.imread(INFER_PATH + '005115.png')
 h, w, _ = infer_image.shape
