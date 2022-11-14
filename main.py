@@ -29,7 +29,6 @@ def train (train_loader, valid_loader, optimizer, model, epoch):
 
         MSE = torch.nn.L1Loss ()
         mse = MSE (predict, label)
-
         mse.backward()
         optimizer.step()
         mse = to_numpy(mse)
@@ -69,7 +68,7 @@ def main():
     else:
         ckpt = torch.load(MODEL_PATH)
         model.load_state_dict(ckpt['state_dict'], strict=True)
-        start_epoch = ckpt['epoch'] + 1
+        start_epoch = ckpt['epoch']  
         print(f'Trained model, starting epoch: {start_epoch} from: {MODEL_PATH}')
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -77,12 +76,14 @@ def main():
 
     train_loader = load_dataset(PATH)
     valid_loader = load_dataset(VALIDATION_PATH)
-    optimizer = torch.optim.Adam(list(model.parameters()), lr = 10**-(5))
-
+    optimizer = torch.optim.Adam(list(model.parameters()), lr = 10**-(6))
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor = 0.5, patience = 3, verbose = True, min_lr = .00000001)
+    
     writer = SummaryWriter()
     for epoch in tqdm.tqdm (range(start_epoch, start_epoch + number_of_epochs)): 
         train_loss, mse_valid, mae_valid = train (train_loader, valid_loader, optimizer, model, epoch)
-
+        scheduler.step(mae_valid)
+        
         writer.add_scalar('Train loss -> MAE', train_loss, epoch)
         writer.add_scalar('MAE validation', mae_valid, epoch)
         writer.add_scalar('MSE validation', mse_valid, epoch)

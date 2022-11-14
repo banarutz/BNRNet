@@ -25,8 +25,11 @@ class VGGLoader (torch.utils.data.Dataset):
         image = cv2.imread(self.PATH + path)
         # print (self.PATH + path)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+       
+        
         input = image [:, :, 0]
         image = image[:, :, 1:3]
+        
         image = Image.fromarray(image)
         input = Image.fromarray(input)
 
@@ -45,7 +48,7 @@ class VGGLoader (torch.utils.data.Dataset):
 
         image = to_tensor(image)
         input = to_tensor(input)
-
+        
         # print (image)
         # image = image / 255.0
         # print(image)

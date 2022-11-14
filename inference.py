@@ -1,16 +1,17 @@
 from VGG16 import VGGNet, ECCVGenerator
 from imports import *
 from utils import *
+from PIL import Image
 from config import LOAD_MODEL_PATH, INFER_PATH
 
-np.set_printoptions(threshold=sys.maxsize)
+# np.set_printoptions(threshold=sys.maxsize)
 
 model = VGGNet()
 # model = ECCVGenerator()
-ckpt = torch.load(LOAD_MODEL_PATH + '41.pth' )
+ckpt = torch.load(LOAD_MODEL_PATH + '39.pth' )
 model.load_state_dict(ckpt['state_dict'], strict=True)
 
-infer_image = cv2.imread(INFER_PATH + '000022.png')
+infer_image = cv2.imread(INFER_PATH + '000023.jpg')
 h, w, _ = infer_image.shape
 infer_image_LAB = cv2.cvtColor(infer_image, cv2.COLOR_BGR2LAB)
 
@@ -25,6 +26,13 @@ B_infer_image = infer_image[:, :, 2]
 L_infer_image_numpy = L_infer_image
 
 to_tensor = transforms.ToTensor()
+tensor_resize = transforms.Resize ((218 , 178))
+
+
+L_infer_image = Image.fromarray(L_infer_image)
+print (type(L_infer_image ))
+# exit()
+L_infer_image = tensor_resize(L_infer_image)
 L_infer_image = to_tensor(L_infer_image)
 L_infer_image = L_infer_image[None, :, :, :]
 # print(L_infer_image)
@@ -71,12 +79,11 @@ print(image.shape)
 # exit()
 # image = image [0, 0, :, :, :]
 image = to_numpy(image)
-print(image)
 # show_img(image)
 image = np.uint8(image*255)
-print(image)
+# print(image)
 # print (np.uint8(255*predict))
-
+# show_img(image)
 full_img_predict = cv2.cvtColor(image, cv2.COLOR_LAB2BGR)
 # full_img_predict = cv2.resize (full_img_predict, (w,h))
 # print(full_img_predict)

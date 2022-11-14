@@ -7,14 +7,14 @@ from imports import *
 
 PATH = 'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_cropped_png\\TRAIN\\'
 VALIDATION_PATH = 'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_cropped_png\\VALIDATION\\'
-SAVE_MODEL_PATH = 'D:\\se_joaca_licenta\\Models'
-# MODEL_PATH = 'D:\\se_joaca_licenta\\Models\\69.pth'
+SAVE_MODEL_PATH = 'D:\\se_joaca_licenta\\modele_din_teste'
+# MODEL_PATH = 'D:\se_joaca_licenta\modele_din_teste'
 MODEL_PATH = None
 
 
 LOAD_MODEL_PATH = 'D:\\se_joaca_licenta\\Models\\'
 # INFER_PATH =  'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_cropped_png\\img_align_celeba_png\\'
-INFER_PATH = 'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_cropped_png\\TRAIN\\'
+INFER_PATH = 'D:\\se_joaca_licenta\\Datasets\\CelebA\\Img\\images_non_cropped\\img_celeba\\'
 
 ###########
  # PARAMS #
